@@ -36,7 +36,8 @@ int checkVictory(char[][COLS], int, int, int, int, char);
 int humanChoose(char[][COLS], int, int);
 
 /* Computer*/
-int computerChoose(char[][COLS], int, int, char, char);
+//int computerChoose(char[][COLS], int, int, char, char);
+int computerChoose(char[][COLS], int, int);
 
 void runConnectFour(char[][COLS], int, int, int, int);
 
@@ -91,3 +92,53 @@ int getPlayerType(int playerNumber) {
         while (getchar() != '\n'); // clear rest of input
     }
 }
+
+void initBoard(char board[][COLS], int rows, int cols){
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols ; j++){
+            board[i][j] = EMPTY;
+        }
+    }
+}
+
+void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2){
+    int flagwin = 1;
+    int flagdraw = 2;
+    int result = 0;
+    int move = type1;   
+    int turn = 1;
+
+    while(result == 0){
+        (isBoardFull(board, cols, rows) == 1) ? result = flagdraw : result = 0;
+        move == HUMAN ? humanChoose(board, cols, rows) : computerChoose(board, rows, cols);
+        
+    }
+}  
+
+int isColumnFull(char board[][COLS], int rows, int cols, int collum){
+    for (int i = rows - 1; i >= 0; i--){
+        if (board[i][collum-1] == EMPTY){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int isBoardFull(char board[][COLS], int rows, int cols){
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            if (board[i][j] == EMPTY){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+int isInBounds(int rows, int cols, int row, int col){
+    return (row > 0 && row <= rows) & (col > 0 && col <= cols);
+}
+
+
+
+
