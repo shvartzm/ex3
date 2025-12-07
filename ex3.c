@@ -33,7 +33,7 @@ int makeMove(char[][COLS], int, int, int, char);
 int checkVictory(char[][COLS], int, int, int, int, char);
 
 /* Human player: asks repeatedly until a valid non-full column is chosen (0-based) */
-int humanChoose(char[][COLS], int, int);
+int humanChoose(char[][COLS], int, int,char);
 
 /* Computer*/
 //int computerChoose(char[][COLS], int, int, char, char);
@@ -112,13 +112,24 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
     int result = 0;
     int move = type1;   
     int currPlayer = 1;
+    char currToken = TOKEN_P1;
 
     while(result == 0){
-        result = (isBoardFull(board,cols,rows) == 1) ? flagdraw : 0;
-        currPlayer == 1 ? printf("Player %d (%c) turn.\n", currPlayer, TOKEN_P1) : printf("Player %d (%c) turn.\n", currPlayer, TOKEN_P2);
-        (move == HUMAN) ? humanChoose(board, cols, rows) : computerChoose(board, rows, cols);
-        
-        
+        if (isBoardFull(board,cols,rows)){
+            printf("Board full and no winner. It's a tie!");
+            break;
+        }
+        printf("Player %d (%c) turn.\n", currPlayer, currToken);
+        result = (move == HUMAN) ? humanChoose(board, cols, rows,currToken) : computerChoose(board, rows, cols);
+        if (result){
+            printf("PLayer %d (%c) wins!", currPlayer, currToken);
+            printBoard(board,ROWS,COLS);
+            break;
+        }
+        printBoard(board, ROWS, COLS);
+        currPlayer = currPlayer == 1 ? 2 : 1;
+        move = move == type1 ? type2 : type1;
+        currToken = currToken == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
     }
 }  
 
@@ -143,14 +154,14 @@ int isBoardFull(char board[][COLS], int rows, int cols){
 }
 
 int isInBounds(int rows, int cols, int row, int col){
-    return (row > 0 && row <= rows) && (col > 0 && col <= cols);
+    return (row >= 0 && row < rows) && (col >= 0 && col < cols);
 }
 
 
 int makeMove(char board[][COLS], int rows, int cols, int collum, char token){
     for(int i = rows -1; i >= 0; i--){
-        if (board[i][collum] == EMPTY){
-            board[i][collum] = token;
+        if (board[i][collum - 1] == EMPTY){
+            board[i][collum - 1] = token;
             return i;
         }
     }
@@ -170,7 +181,7 @@ int checkUpDown(char board[][COLS], int rows, int cols, int row, int col, char t
         flagUp &= isInBounds(rows,cols, row - i, col) && (board[row - i][col] == token);
         flagDown &= isInBounds(rows, cols, row + i, col) && (board[row + i][col] == token);
         sumTokens += flagUp + flagDown;
-        return sumTokens >= 4;
+        if (sumTokens >= 4) return 1;
     }
     return 0;
 }
@@ -186,7 +197,7 @@ int checkRightLeft(char board[][COLS], int rows, int cols, int row, int col, cha
         flagRight &= isInBounds(rows, cols, row, col + i) && (board[row][col + i] == token);
         flagLeft &= isInBounds(rows,cols, row, col - i) && (board[row][col - i] == token);
         sumTokens += flagRight + flagLeft;
-        return sumTokens >= 4;
+        if (sumTokens >= 4) return 1;
     }
     return 0;
 }
@@ -200,7 +211,7 @@ int checkRightDiagonal(char board[][COLS], int rows, int cols, int row, int col,
         flagRightUp &= isInBounds(rows, cols, row - i , col + i) && (board[row - i][col + i] == token);
         flagLeftDown &= isInBounds(rows,cols, row + i, col - i) && (board[row + i][col - i] == token);
         sumTokens += flagRightUp + flagLeftDown;
-        return sumTokens >= 4;
+        if (sumTokens >= 4) return 1;
     }
     return 0;
 }
@@ -214,22 +225,42 @@ int checkLeftDiagonal(char board[][COLS], int rows, int cols, int row, int col, 
         flagLeftUp &= isInBounds(rows, cols, row - i, col - i) && (board[row - i][col - i] == token);
         flagRightDown &= isInBounds(rows,cols, row + i, col + i) && (board[row + i][col + i] == token);
         sumTokens += flagLeftUp + flagRightDown;
-        return sumTokens >= 4;
+        if (sumTokens >= 4) return 1;
     }
     return 0;
 }
 
 int checkVictory(char board[][COLS], int rows, int cols, int row, int col, char token){
-    int checkUp = checkUpDown(board,rows,cols,row,col,token);
-    int checkRight = checkRightLeft(board,rows,cols,row,col,token);
-    int checkRightDia = checkRightDiagonal(board,rows,cols,row,col,token);
-    int checkLeftDia = checkLeftDiagonal(board,rows,cols,row,col,token);
+    int checkUp = checkUpDown(board,rows,cols,row - 1,col - 1,token);
+    int checkRight = checkRightLeft(board,rows,cols,row - 1,col - 1,token);
+    int checkRightDia = checkRightDiagonal(board,rows,cols,row - 1,col - 1,token);
+    int checkLeftDia = checkLeftDiagonal(board,rows,cols,row - 1 ,col - 1,token);
     return checkUp || checkRight || checkRightDia || checkLeftDia;
 }
 
-/* int humanChoose(char board[][COLS], int rows, int cols){
+int humanChoose(char board[][COLS], int rows, int cols, char token){
     int chosencol;
+    int chosenRow;
     printf("Enter column (1-%d): ", COLS);
-    scanf()
-} */ 
+    int isInteger = scanf("%d", &chosencol);
+    while(! ((chosencol >= 1 && chosencol <= cols) && isInteger && !isColumnFull(board,rows,cols,chosencol))){
+        if (!isInteger) {
+            printf("Invalid input. Enter a number.");
+            while (getchar() != '\n'); // clear input buffer
+        }
+        else if(!(chosencol >= 1 && chosencol <= cols)){
+             printf("Invalid column. Choose between 1 and %d.", cols);
+        }
+        else{
+            printf("Column %d is full. Choose another column.", chosencol);
+        }
+        isInteger = scanf("%d", &chosencol);
+    }
+    chosenRow = makeMove(board,rows,cols,chosencol,token);
+    return checkVictory(board,rows,cols,chosenRow + 1,chosencol,token);
+}
+
+int computerChoose(char board[][COLS], int rows, int cols){
+
+}
 
