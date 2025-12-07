@@ -109,8 +109,8 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
     int turn = 1;
 
     while(result == 0){
-        (isBoardFull(board, cols, rows) == 1) ? result = flagdraw : result = 0;
-        move == HUMAN ? humanChoose(board, cols, rows) : computerChoose(board, rows, cols);
+        result = (isBoardFull(board,cols,rows) == 1) ? flagdraw : 0;
+        (move == HUMAN) ? humanChoose(board, cols, rows) : computerChoose(board, rows, cols);
         
     }
 }  
