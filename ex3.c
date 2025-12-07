@@ -47,6 +47,11 @@ void printBoard(char[][COLS], int, int);
 
 int getPlayerType(int);
 
+int checkUpDown(char[][COLS], int, int, int, int, char);
+int checkRightLeft(char[][COLS], int, int, int, int, char);
+int checkRightDiagonal(char[][COLS],int, int, int, int, char);
+int checkLeftDiagonal(char[][COLS], int, int, int , int, char);
+
 
 int main() {
     char board[ROWS][COLS];
@@ -106,11 +111,13 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
     int flagdraw = 2;
     int result = 0;
     int move = type1;   
-    int turn = 1;
+    int currPlayer = 1;
 
     while(result == 0){
         result = (isBoardFull(board,cols,rows) == 1) ? flagdraw : 0;
+        currPlayer == 1 ? printf("Player %d (%c) turn.\n", currPlayer, TOKEN_P1) : printf("Player %d (%c) turn.\n", currPlayer, TOKEN_P2);
         (move == HUMAN) ? humanChoose(board, cols, rows) : computerChoose(board, rows, cols);
+        
         
     }
 }  
@@ -136,9 +143,93 @@ int isBoardFull(char board[][COLS], int rows, int cols){
 }
 
 int isInBounds(int rows, int cols, int row, int col){
-    return (row > 0 && row <= rows) & (col > 0 && col <= cols);
+    return (row > 0 && row <= rows) && (col > 0 && col <= cols);
 }
 
 
+int makeMove(char board[][COLS], int rows, int cols, int collum, char token){
+    for(int i = rows -1; i >= 0; i--){
+        if (board[i][collum] == EMPTY){
+            board[i][collum] = token;
+            return i;
+        }
+    }
+    return -1;
+}
 
+int checkUpDown(char board[][COLS], int rows, int cols, int row, int col, char token){
+    int flagUp = 1; // make sure up wasn't enemy
+    int flagDown = 1; // make sure down wasn't enemy
+    int sumTokens = 1; // sum of tokens in a row
+
+    char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
+    for (int i = 1; i < CONNECT_N; i++){
+         /* flagUp = isInBounds(rows, cols, row + i, col) && (board[row + i][col] != enemyToken);
+        flagDown = isInBounds(rows,cols, row - i, col) && (board[row - i][col] != enemyToken);
+        sumTokens += (flagUp && board[row + i][col] == token) + (flagDown && board[row - i][col] == token); */ 
+        flagUp &= isInBounds(rows,cols, row - i, col) && (board[row - i][col] == token);
+        flagDown &= isInBounds(rows, cols, row + i, col) && (board[row + i][col] == token);
+        sumTokens += flagUp + flagDown;
+        return sumTokens >= 4;
+    }
+    return 0;
+}
+
+
+int checkRightLeft(char board[][COLS], int rows, int cols, int row, int col, char token){
+    int flagRight = 1; // make sure right wasn't enemy
+    int flagLeft = 1; // make sure left wasn't enemy
+    int sumTokens = 1; // sum of tokens in a row
+
+    char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
+    for (int i = 1; i < CONNECT_N; i++){
+        flagRight &= isInBounds(rows, cols, row, col + i) && (board[row][col + i] == token);
+        flagLeft &= isInBounds(rows,cols, row, col - i) && (board[row][col - i] == token);
+        sumTokens += flagRight + flagLeft;
+        return sumTokens >= 4;
+    }
+    return 0;
+}
+
+int checkRightDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token){
+    int flagRightUp = 1; // make sure right up wasn't enemy
+    int flagLeftDown = 1; // make sure left down wasn't enemy
+    int sumTokens = 1; 
+    char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
+    for (int i = 1; i < CONNECT_N; i++){
+        flagRightUp &= isInBounds(rows, cols, row - i , col + i) && (board[row - i][col + i] == token);
+        flagLeftDown &= isInBounds(rows,cols, row + i, col - i) && (board[row + i][col - i] == token);
+        sumTokens += flagRightUp + flagLeftDown;
+        return sumTokens >= 4;
+    }
+    return 0;
+}
+
+int checkLeftDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token){
+    int flagLeftUp = 1; // make sure right up wasn't enemy
+    int flagRightDown = 1; // make sure left down wasn't enemy
+    int sumTokens = 1; 
+    char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
+    for (int i = 1; i < CONNECT_N; i++){
+        flagLeftUp &= isInBounds(rows, cols, row - i, col - i) && (board[row - i][col - i] == token);
+        flagRightDown &= isInBounds(rows,cols, row + i, col + i) && (board[row + i][col + i] == token);
+        sumTokens += flagLeftUp + flagRightDown;
+        return sumTokens >= 4;
+    }
+    return 0;
+}
+
+int checkVictory(char board[][COLS], int rows, int cols, int row, int col, char token){
+    int checkUp = checkUpDown(board,rows,cols,row,col,token);
+    int checkRight = checkRightLeft(board,rows,cols,row,col,token);
+    int checkRightDia = checkRightDiagonal(board,rows,cols,row,col,token);
+    int checkLeftDia = checkLeftDiagonal(board,rows,cols,row,col,token);
+    return checkUp || checkRight || checkRightDia || checkLeftDia;
+}
+
+/* int humanChoose(char board[][COLS], int rows, int cols){
+    int chosencol;
+    printf("Enter column (1-%d): ", COLS);
+    scanf()
+} */ 
 
