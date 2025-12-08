@@ -121,7 +121,7 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
             break;
         }
         printf("Player %d (%c) turn.\n", currPlayer, currToken);
-        result = (move == HUMAN) ? humanChoose(board, cols, rows,currToken) : computerChoose(board, rows, cols, currToken);
+        result = (move == HUMAN) ? humanChoose(board, rows, cols,currToken) : computerChoose(board, rows, cols, currToken);
         if (result){
             printf("PLayer %d (%c) wins!", currPlayer, currToken);
             printBoard(board,ROWS,COLS);
