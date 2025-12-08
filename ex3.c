@@ -18,6 +18,9 @@
 #define HUMAN 1
 #define COMPUTER 2
 
+#define FLAG_FOUR 0
+#define FLAG_THREE 1
+
 int isColumnFull(char[][COLS], int, int, int);
 
 int isBoardFull(char[][COLS], int, int);
@@ -30,14 +33,14 @@ int getFreeRow(char[][COLS], int, int, int);
 /* Place token in column (0-based). Return row index or -1 if illegal */
 int makeMove(char[][COLS], int, int, int, char);
 
-int checkVictory(char[][COLS], int, int, int, int, char);
+int checkVictory(char[][COLS], int, int, int, int, char,int);
 
 /* Human player: asks repeatedly until a valid non-full column is chosen (0-based) */
 int humanChoose(char[][COLS], int, int,char);
 
 /* Computer*/
 //int computerChoose(char[][COLS], int, int, char, char);
-int computerChoose(char[][COLS], int, int);
+int computerChoose(char[][COLS], int, int,char);
 
 void runConnectFour(char[][COLS], int, int, int, int);
 
@@ -47,10 +50,10 @@ void printBoard(char[][COLS], int, int);
 
 int getPlayerType(int);
 
-int checkUpDown(char[][COLS], int, int, int, int, char);
-int checkRightLeft(char[][COLS], int, int, int, int, char);
-int checkRightDiagonal(char[][COLS],int, int, int, int, char);
-int checkLeftDiagonal(char[][COLS], int, int, int , int, char);
+int checkUpDown(char[][COLS], int, int, int, int, char,int);
+int checkRightLeft(char[][COLS], int, int, int, int, char,int);
+int checkRightDiagonal(char[][COLS],int, int, int, int, char,int);
+int checkLeftDiagonal(char[][COLS], int, int, int , int, char,int);
 
 
 int main() {
@@ -120,7 +123,7 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
             break;
         }
         printf("Player %d (%c) turn.\n", currPlayer, currToken);
-        result = (move == HUMAN) ? humanChoose(board, cols, rows,currToken) : computerChoose(board, rows, cols);
+        result = (move == HUMAN) ? humanChoose(board, cols, rows,currToken) : computerChoose(board, rows, cols, currToken);
         if (result){
             printf("PLayer %d (%c) wins!", currPlayer, currToken);
             printBoard(board,ROWS,COLS);
@@ -168,73 +171,73 @@ int makeMove(char board[][COLS], int rows, int cols, int collum, char token){
     return -1;
 }
 
-int checkUpDown(char board[][COLS], int rows, int cols, int row, int col, char token){
+int checkUpDown(char board[][COLS], int rows, int cols, int row, int col, char token, int flagseq){
     int flagUp = 1; // make sure up wasn't enemy
     int flagDown = 1; // make sure down wasn't enemy
     int sumTokens = 1; // sum of tokens in a row
 
     char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
-    for (int i = 1; i < CONNECT_N; i++){
+    for (int i = 1; i < (CONNECT_N - flagseq); i++){
          /* flagUp = isInBounds(rows, cols, row + i, col) && (board[row + i][col] != enemyToken);
         flagDown = isInBounds(rows,cols, row - i, col) && (board[row - i][col] != enemyToken);
         sumTokens += (flagUp && board[row + i][col] == token) + (flagDown && board[row - i][col] == token); */ 
         flagUp &= isInBounds(rows,cols, row - i, col) && (board[row - i][col] == token);
         flagDown &= isInBounds(rows, cols, row + i, col) && (board[row + i][col] == token);
         sumTokens += flagUp + flagDown;
-        if (sumTokens >= 4) return 1;
+        if (sumTokens >= (4-flagseq)) return 1;
     }
     return 0;
 }
 
 
-int checkRightLeft(char board[][COLS], int rows, int cols, int row, int col, char token){
+int checkRightLeft(char board[][COLS], int rows, int cols, int row, int col, char token, int flagseq){
     int flagRight = 1; // make sure right wasn't enemy
     int flagLeft = 1; // make sure left wasn't enemy
     int sumTokens = 1; // sum of tokens in a row
 
     char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
-    for (int i = 1; i < CONNECT_N; i++){
+    for (int i = 1; i < (CONNECT_N - flagseq); i++){
         flagRight &= isInBounds(rows, cols, row, col + i) && (board[row][col + i] == token);
         flagLeft &= isInBounds(rows,cols, row, col - i) && (board[row][col - i] == token);
         sumTokens += flagRight + flagLeft;
-        if (sumTokens >= 4) return 1;
+        if (sumTokens >= (4-flagseq)) return 1;
     }
     return 0;
 }
 
-int checkRightDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token){
+int checkRightDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token, int flagseq){
     int flagRightUp = 1; // make sure right up wasn't enemy
     int flagLeftDown = 1; // make sure left down wasn't enemy
     int sumTokens = 1; 
     char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
-    for (int i = 1; i < CONNECT_N; i++){
+    for (int i = 1; i < (CONNECT_N - flagseq); i++){
         flagRightUp &= isInBounds(rows, cols, row - i , col + i) && (board[row - i][col + i] == token);
         flagLeftDown &= isInBounds(rows,cols, row + i, col - i) && (board[row + i][col - i] == token);
         sumTokens += flagRightUp + flagLeftDown;
-        if (sumTokens >= 4) return 1;
+        if (sumTokens >= (4 - flagseq)) return 1;
     }
     return 0;
 }
 
-int checkLeftDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token){
+int checkLeftDiagonal(char board[][COLS], int rows, int cols, int row, int col, char token, int flagseq){
     int flagLeftUp = 1; // make sure right up wasn't enemy
     int flagRightDown = 1; // make sure left down wasn't enemy
     int sumTokens = 1; 
     char enemyToken = token == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
-    for (int i = 1; i < CONNECT_N; i++){
+    for (int i = 1; i < (CONNECT_N - flagseq); i++){
         flagLeftUp &= isInBounds(rows, cols, row - i, col - i) && (board[row - i][col - i] == token);
         flagRightDown &= isInBounds(rows,cols, row + i, col + i) && (board[row + i][col + i] == token);
         sumTokens += flagLeftUp + flagRightDown;
-        if (sumTokens >= 4) return 1;
+        if (sumTokens >= (4 - flagseq)) return 1;
     }
     return 0;
 }
 
-int checkVictory(char board[][COLS], int rows, int cols, int row, int col, char token){
-    int checkUp = checkUpDown(board,rows,cols,row - 1,col - 1,token);
-    int checkRight = checkRightLeft(board,rows,cols,row - 1,col - 1,token);
-    int checkRightDia = checkRightDiagonal(board,rows,cols,row - 1,col - 1,token);
-    int checkLeftDia = checkLeftDiagonal(board,rows,cols,row - 1 ,col - 1,token);
+int checkVictory(char board[][COLS], int rows, int cols, int row, int col, char token, int flagseq){
+    int checkUp = checkUpDown(board,rows,cols,row - 1,col - 1,token,flagseq);
+    int checkRight = checkRightLeft(board,rows,cols,row - 1,col - 1,token,flagseq);
+    int checkRightDia = checkRightDiagonal(board,rows,cols,row - 1,col - 1,token,flagseq);
+    int checkLeftDia = checkLeftDiagonal(board,rows,cols,row - 1 ,col - 1,token,flagseq);
     return checkUp || checkRight || checkRightDia || checkLeftDia;
 }
 
@@ -257,10 +260,116 @@ int humanChoose(char board[][COLS], int rows, int cols, char token){
         isInteger = scanf("%d", &chosencol);
     }
     chosenRow = makeMove(board,rows,cols,chosencol,token);
-    return checkVictory(board,rows,cols,chosenRow + 1,chosencol,token);
+    return checkVictory(board,rows,cols,chosenRow + 1,chosencol,token,FLAG_FOUR);
 }
 
-int computerChoose(char board[][COLS], int rows, int cols){
+int computerChoose(char board[][COLS], int rows, int cols, char currToken){
+    int startingCol = (cols + 1) /2;
+    int i =0;
+    int multiplier = cols % 2 == 0 ? -1 : 1;
+    int currIndex = startingCol;
+    int step = 1;
+    char enemyToken = currToken == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
+    while (i < cols){
+        // make win function
+            if(!isColumnFull(board,rows,cols,currIndex)){
+                if(checkVictory(board,rows,cols,getFreeRow(board,rows,cols,currIndex) + 1, currIndex, currToken,FLAG_FOUR)){
+                    makeMove(board,rows,cols,currIndex, currToken);
+                    return 1;
+                }
+            }
+            currIndex = currIndex + (step * multiplier);
+            step++;
+            multiplier *= -1;
+            i++;
+    }
+
+    i = 0;
+    multiplier = cols % 2 == 0 ? -1 : 1;
+    currIndex = startingCol;
+    step = 1;
+
+    
+    while (i < cols){
+        // block win function
+        if(!isColumnFull(board,rows,cols,currIndex)){
+            if(checkVictory(board,rows,cols,getFreeRow(board,rows,cols,currIndex)+ 1,currIndex,enemyToken,FLAG_FOUR)){
+                makeMove(board,rows,cols,currIndex, currToken);
+                    return 0;
+            }
+        }
+        currIndex = currIndex + (step * multiplier);
+        step++;
+        multiplier *= -1;
+        i++;
+    }
+
+    i = 0;
+    multiplier = cols % 2 == 0 ? -1 : 1;
+    currIndex = startingCol;
+    step = 1;
+  
+    while (i < cols){
+        // take 3 sequence
+        if(!isColumnFull(board,rows,cols,currIndex)){
+            if(checkVictory(board,rows,cols,getFreeRow(board,rows,cols,currIndex)+ 1,currIndex,currToken,FLAG_THREE)){
+                makeMove(board,rows,cols,currIndex, currToken);
+                    return 0;
+            }
+        }
+        currIndex = currIndex + (step * multiplier);
+        step++;
+        multiplier *= -1;
+        i++;
+    }
+    
+    i = 0;
+    multiplier = cols % 2 == 0 ? -1 : 1;
+    currIndex = startingCol;
+    step = 1;
+
+    while (i < cols){
+        // block three function
+        if(!isColumnFull(board,rows,cols,currIndex)){
+            if(checkVictory(board,rows,cols,getFreeRow(board,rows,cols,currIndex)+ 1,currIndex,enemyToken,FLAG_THREE)){
+                makeMove(board,rows,cols,currIndex, currToken);
+                    return 0;
+            }
+        }
+        currIndex = currIndex + (step * multiplier);
+        step++;
+        multiplier *= -1;
+        i++;
+    }
+
+    i = 0;
+    multiplier = cols % 2 == 0 ? -1 : 1;
+    currIndex = startingCol;
+    step = 1;
+
+    while (i < cols){
+        // block three function
+        if(!isColumnFull(board,rows,cols,currIndex)){
+                makeMove(board,rows,cols,currIndex, currToken);
+                return 0;
+        }
+        currIndex = currIndex + (step * multiplier);
+        step++;
+        multiplier *= -1;
+        i++;
+    }
+    return 0;
 
 }
+
+int getFreeRow(char board[][COLS], int rows, int cols, int collumn){
+    for(int i = rows -1; i >= 0; i--){
+        if (board[i][collumn - 1] == EMPTY){
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 
