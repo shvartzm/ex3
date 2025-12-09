@@ -125,7 +125,7 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
         printBoard(board, ROWS, COLS);
         if (result){
             printf("Player %d (%c) wins!", currPlayer, currToken);
-            printBoard(board,ROWS,COLS);
+            
             break;
         }
         currPlayer = currPlayer == 1 ? 2 : 1;
@@ -281,7 +281,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
     }
 
     i = 0;
-    multiplier = cols % 2 == 0 ? -1 : 1;
+    multiplier = cols % 2 == 0 ? 1 : -1;
     currIndex = startingCol;
     step = 1;
 
@@ -302,7 +302,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
     }
 
     i = 0;
-    multiplier = cols % 2 == 0 ? -1 : 1;
+    multiplier = cols % 2 == 0 ? 1 : -1;
     currIndex = startingCol;
     step = 1;
   
@@ -322,7 +322,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
     }
     
     i = 0;
-    multiplier = cols % 2 == 0 ? -1 : 1;
+    multiplier = cols % 2 == 0 ? 1 : -1;
     currIndex = startingCol;
     step = 1;
 
@@ -342,7 +342,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
     }
 
     i = 0;
-    multiplier = cols % 2 == 0 ? -1 : 1;
+    multiplier = cols % 2 == 0 ? 1 : -1;
     currIndex = startingCol;
     step = 1;
 
