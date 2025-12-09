@@ -117,14 +117,14 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
 
     while(result == 0){
         if (isBoardFull(board,cols,rows)){
-            printf("Board full and no winner. It's a tie!");
+            printf("Board full and no winner. It's a tie!\n");
             break;
         }
         printf("Player %d (%c) turn.\n", currPlayer, currToken);
         result = (move == HUMAN) ? humanChoose(board, rows, cols,currToken) : computerChoose(board, rows, cols, currToken);
         printBoard(board, ROWS, COLS);
         if (result){
-            printf("PLayer %d (%c) wins!", currPlayer, currToken);
+            printf("Player %d (%c) wins!", currPlayer, currToken);
             printBoard(board,ROWS,COLS);
             break;
         }
@@ -242,14 +242,14 @@ int humanChoose(char board[][COLS], int rows, int cols, char token){
     int isInteger = scanf("%d", &chosencol);
     while(! ((chosencol >= 1 && chosencol <= cols) && isInteger && !isColumnFull(board,rows,chosencol))){
         if (!isInteger) {
-            printf("Invalid input. Enter a number.");
+            printf("Invalid input. Enter a number.\n");
             while (getchar() != '\n'); // clear input buffer
         }
         else if(!(chosencol >= 1 && chosencol <= cols)){
-             printf("Invalid column. Choose between 1 and %d.", cols);
+             printf("Invalid column. Choose between 1 and %d.\n", cols);
         }
         else{
-            printf("Column %d is full. Choose another column.", chosencol);
+            printf("Column %d is full. Choose another column.\n", chosencol);
         }
         isInteger = scanf("%d", &chosencol);
     }
@@ -269,7 +269,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
             if(!isColumnFull(board,rows,currIndex)){
                 if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex) + 1, currIndex, currToken,FLAG_FOUR)){
                     makeMove(board,rows,currIndex, currToken);
-                    printf("Computer chose chose %d\n", currIndex);
+                    printf("Computer chose %d\n", currIndex);
                     return 1;
                 }
             }
@@ -290,7 +290,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_FOUR)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d\n", currIndex);
+                printf("Computer chose %d\n", currIndex);
                 return 0;
             }
         }
@@ -310,7 +310,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,currToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d\n", currIndex);
+                printf("Computer chose %d\n", currIndex);
                     return 0;
             }
         }
@@ -330,7 +330,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d\n", currIndex);
+                printf("Computer chose %d\n", currIndex);
                     return 0;
             }
         }
@@ -349,7 +349,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         // block three function
         if(!isColumnFull(board,rows,currIndex)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d\n", currIndex);
+                printf("Computer chose %d\n", currIndex);
                 return 0;
         }
         currIndex = currIndex + (step * multiplier);
