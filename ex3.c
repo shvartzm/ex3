@@ -261,7 +261,7 @@ int humanChoose(char board[][COLS], int rows, int cols, char token){
 int computerChoose(char board[][COLS], int rows, int cols, char currToken){
     int startingCol = (cols + 1) /2;
     int i =0;
-    int multiplier = cols % 2 == 0 ? -1 : 1;
+    int multiplier = cols % 2 == 0 ? 1 : -1;
     int currIndex = startingCol;
     int step = 1;
     char enemyToken = currToken == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
