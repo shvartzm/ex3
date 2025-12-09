@@ -269,6 +269,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
             if(!isColumnFull(board,rows,currIndex)){
                 if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex) + 1, currIndex, currToken,FLAG_FOUR)){
                     makeMove(board,rows,currIndex, currToken);
+                    printf("Computer chose chose %d", currIndex);
                     return 1;
                 }
             }
@@ -289,7 +290,8 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_FOUR)){
                 makeMove(board,rows,currIndex, currToken);
-                    return 0;
+                printf("Computer chose chose %d", currIndex);
+                return 0;
             }
         }
         currIndex = currIndex + (step * multiplier);
@@ -308,6 +310,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,currToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
+                printf("Computer chose chose %d", currIndex);
                     return 0;
             }
         }
@@ -327,6 +330,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
+                printf("Computer chose chose %d", currIndex);
                     return 0;
             }
         }
@@ -345,6 +349,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         // block three function
         if(!isColumnFull(board,rows,currIndex)){
                 makeMove(board,rows,currIndex, currToken);
+                printf("Computer chose chose %d", currIndex);
                 return 0;
         }
         currIndex = currIndex + (step * multiplier);
