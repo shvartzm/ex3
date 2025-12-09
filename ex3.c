@@ -349,7 +349,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         // block three function
         if(!isColumnFull(board,rows,currIndex)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d", currIndex);
+                printf("Computer chose chose %d\n", currIndex);
                 return 0;
         }
         currIndex = currIndex + (step * multiplier);
