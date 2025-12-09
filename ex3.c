@@ -122,12 +122,12 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
         }
         printf("Player %d (%c) turn.\n", currPlayer, currToken);
         result = (move == HUMAN) ? humanChoose(board, rows, cols,currToken) : computerChoose(board, rows, cols, currToken);
+        printBoard(board, ROWS, COLS);
         if (result){
             printf("PLayer %d (%c) wins!", currPlayer, currToken);
             printBoard(board,ROWS,COLS);
             break;
         }
-        printBoard(board, ROWS, COLS);
         currPlayer = currPlayer == 1 ? 2 : 1;
         move = move == type1 ? type2 : type1;
         currToken = currToken == TOKEN_P1 ? TOKEN_P2 : TOKEN_P1;
@@ -269,7 +269,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
             if(!isColumnFull(board,rows,currIndex)){
                 if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex) + 1, currIndex, currToken,FLAG_FOUR)){
                     makeMove(board,rows,currIndex, currToken);
-                    printf("Computer chose chose %d", currIndex);
+                    printf("Computer chose chose %d\n", currIndex);
                     return 1;
                 }
             }
@@ -290,7 +290,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_FOUR)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d", currIndex);
+                printf("Computer chose chose %d\n", currIndex);
                 return 0;
             }
         }
@@ -310,7 +310,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,currToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d", currIndex);
+                printf("Computer chose chose %d\n", currIndex);
                     return 0;
             }
         }
@@ -330,7 +330,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
         if(!isColumnFull(board,rows,currIndex)){
             if(checkVictory(board,rows,cols,getFreeRow(board,rows,currIndex)+ 1,currIndex,enemyToken,FLAG_THREE)){
                 makeMove(board,rows,currIndex, currToken);
-                printf("Computer chose chose %d", currIndex);
+                printf("Computer chose chose %d\n", currIndex);
                     return 0;
             }
         }
