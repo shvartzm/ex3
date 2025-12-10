@@ -121,7 +121,10 @@ void runConnectFour(char board[][COLS], int rows, int cols, int type1, int type2
             break;
         }
         printf("Player %d (%c) turn.\n", currPlayer, currToken); // print curr turn
-        result = (move == HUMAN) ? humanChoose(board, rows, cols,currToken) : computerChoose(board, rows, cols, currToken); // check how to procced
+         // check how to procced
+        result = (move == HUMAN)
+             ? humanChoose(board, rows, cols,currToken) 
+             : computerChoose(board, rows, cols, currToken);
         printBoard(board, ROWS, COLS);
         if (result){
             printf("Player %d (%c) wins!", currPlayer, currToken); // print win
@@ -381,7 +384,7 @@ int computerChoose(char board[][COLS], int rows, int cols, char currToken){
 
 int getFreeRow(char board[][COLS], int rows, int collumn){
     for(int i = rows -1; i >= 0; i--){
-        if (board[i][collumn - 1] == EMPTY){ // return row if free
+        if (board[i][collumn - 1] == EMPTY){ // return row   if free
             return i;
         }
     }
